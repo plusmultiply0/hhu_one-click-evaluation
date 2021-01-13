@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name        河海大学(常州)教务系统一键评教脚本
-// @namespace   HHuc
-// @version     1.94
+// @name        河海大学教务系统一键评教脚本
+// @namespace   HHU
+// @version     2.0
 // @description 在教师评教页面显示十个按钮，根据需要（上方按钮随机选择，下方按钮为全相同选项）即可一键全选并填充简单的评语（适用于常州校区，江宁和西康路校区的可以试试）
 // @author      plusmultiply0
 // @match       http://202.119.113.135/*
@@ -112,7 +112,6 @@ function mainForJudge() {
     }
     catch (error) {
         // console.log(error);
-        // console.log('please use in right page!');
     }
 }
 
