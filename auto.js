@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        河海大学(常州)教务系统一键评教脚本
 // @namespace   HHuc
-// @version     1.12
+// @version     1.91
 // @description 在教师评教页面显示五个按钮，根据需要即可一键全选并填充评语（适用于常州校区，江宁和西康路校区的可以试试）
 // @author      plusmultiply0
 // @match       http://202.119.113.135/*
@@ -42,7 +42,6 @@ function mainForJudge() {
                 selectItem(23, 1);
             } catch (error) { }
 
-
             // 生成简单的评语
             document.querySelector("body > form > table.fieldsettop > tbody > tr > td > table:nth-child(3) > tbody > tr:nth-child(2) > td:nth-child(2) > table > tbody > tr > td > textarea").value = "感谢老师这个学期的教学和指导";
         }
@@ -53,14 +52,30 @@ function mainForJudge() {
         const notgood = () => result(2, 3);
         const bad = () => result(5, 0);
 
+        // 选项相同的情况
+        const same_best = () => result(1, 0);
+        const same_good = () => result(2, 0);
+        const same_soso = () => result(3, 0);
+        const same_notgood = () => result(4, 0);
+        const same_bad = () => result(5, 0);
+
         const eventlist = [best, good, soso, notgood, bad];
+
+        const eventlist2 = [same_best,same_good,same_soso,same_notgood,same_bad];
         // UI
         // 生成评教按钮
         const judge = ['非常好', '较好', '一般', '较差', '非常差'];
+        const judge2 = ['全-非常满意', '全-比较满意', '全-一般满意', '全-不满意','全-非常不满意'];
+
         let fragments = document.createDocumentFragment('div');
         let fragmentAll = document.createElement('div');
 
-        fragmentAll.style = "display:flex;";
+        let fragmentOne = document.createElement('div');
+        let fragmentTwo = document.createElement('div');
+
+        fragmentOne.style = "display:flex;";
+        fragmentTwo.style = "display:flex;";
+
         const addElem = (text) => {
             let div = document.createElement('div');
             let textnode = document.createTextNode(text);
@@ -68,14 +83,31 @@ function mainForJudge() {
             div.style = 'border:1px solid #000;font:700 24px serif;';
             return div;
         }
+
+        const addElem2 = (text) => {
+            let div = document.createElement('div');
+            let textnode = document.createTextNode(text);
+            div.appendChild(textnode);
+            div.style = 'border:1px solid #000;font:700 24px serif;';
+            return div;
+        }
+
         // 为每个按钮绑定事件
         let nodes = judge.map((item => addElem(item)));
         for (let i = 0; i < nodes.length; i++) {
             nodes[i].onclick = eventlist[i];
         }
+        let nodes2 = judge2.map((item => addElem2(item)));
+        for (let i = 0; i < nodes2.length; i++) {
+            nodes2[i].onclick = eventlist2[i];
+        }
+
         // 添加至文档片段中
-        nodes.map((item) => fragmentAll.appendChild(item));
-        fragments.appendChild(fragmentAll);
+        nodes.map((item) => fragmentOne.appendChild(item));
+        nodes2.map((item) => fragmentTwo.appendChild(item));
+
+        fragments.appendChild(fragmentOne);
+        fragments.appendChild(fragmentTwo);
         // 添加至页面中
         document.querySelector("body > form > table.fieldsettop > tbody > tr > td > table:nth-child(1) > tbody > tr:nth-child(2) > td:nth-child(2) > table > tbody > tr > td").appendChild(fragments);
     }
