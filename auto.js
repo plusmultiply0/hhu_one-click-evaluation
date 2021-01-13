@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        河海大学(常州)教务系统一键评教脚本
 // @namespace   HHuc
-// @version     1.0
+// @version     1.12
 // @description 在教师评教页面显示五个按钮，根据需要即可一键全选并填充评语（适用于常州校区，江宁和西康路校区的可以试试）
 // @author      plusmultiply0
 // @match       http://202.119.113.135/*
@@ -34,7 +34,16 @@ function mainForJudge() {
             for (let i = 0; i < 6; i++) {
                 selectItem((2 + 3 * i), newArr[i]);
             }
+            // 一般为教材的选用情况，默认为 正式出版教材
+            // 实验课程，该问会询问实验仪器的情况；下一问才是教材的选用情况
             selectItem(20, 1);
+            // 默认为默认为 正式出版教材（当为实验课程时）
+            try {
+                selectItem(23, 1);
+            } catch (error) { }
+
+
+            // 生成简单的评语
             document.querySelector("body > form > table.fieldsettop > tbody > tr > td > table:nth-child(3) > tbody > tr:nth-child(2) > td:nth-child(2) > table > tbody > tr > td > textarea").value = "感谢老师这个学期的教学和指导";
         }
 
@@ -46,31 +55,33 @@ function mainForJudge() {
 
         const eventlist = [best, good, soso, notgood, bad];
         // UI
+        // 生成评教按钮
         const judge = ['非常好', '较好', '一般', '较差', '非常差'];
         let fragments = document.createDocumentFragment('div');
         let fragmentAll = document.createElement('div');
 
         fragmentAll.style = "display:flex;";
-        const addElem = (text) =>{
+        const addElem = (text) => {
             let div = document.createElement('div');
             let textnode = document.createTextNode(text);
             div.appendChild(textnode);
             div.style = 'border:1px solid #000;font:700 24px serif;';
             return div;
         }
-
+        // 为每个按钮绑定事件
         let nodes = judge.map((item => addElem(item)));
         for (let i = 0; i < nodes.length; i++) {
             nodes[i].onclick = eventlist[i];
         }
+        // 添加至文档片段中
         nodes.map((item) => fragmentAll.appendChild(item));
         fragments.appendChild(fragmentAll);
-
+        // 添加至页面中
         document.querySelector("body > form > table.fieldsettop > tbody > tr > td > table:nth-child(1) > tbody > tr:nth-child(2) > td:nth-child(2) > table > tbody > tr > td").appendChild(fragments);
     }
     catch (error) {
         // console.log(error);
-        console.log('please use in right page!');
+        // console.log('please use in right page!');
     }
 }
 
