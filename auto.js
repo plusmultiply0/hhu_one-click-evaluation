@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name        河海大学(常州)教务系统一键评教脚本
 // @namespace   HHuc
-// @version     1.91
-// @description 在教师评教页面显示五个按钮，根据需要即可一键全选并填充评语（适用于常州校区，江宁和西康路校区的可以试试）
+// @version     1.94
+// @description 在教师评教页面显示十个按钮，根据需要（上方按钮随机选择，下方按钮为全相同选项）即可一键全选并填充简单的评语（适用于常州校区，江宁和西康路校区的可以试试）
 // @author      plusmultiply0
 // @match       http://202.119.113.135/*
 // @match       http://202.119.113.136/*
@@ -17,7 +17,6 @@ function mainForJudge() {
         // functional
         const selectItem = (row, col) => {
             let path = `#tblView > tbody > tr > td:nth-child(2) > table > tbody > tr:nth-child(${row}) > td > input[type=radio]:nth-child(${col})`;
-
             document.querySelector(path).setAttribute('checked', true);
         }
 
@@ -41,7 +40,6 @@ function mainForJudge() {
             try {
                 selectItem(23, 1);
             } catch (error) { }
-
             // 生成简单的评语
             document.querySelector("body > form > table.fieldsettop > tbody > tr > td > table:nth-child(3) > tbody > tr:nth-child(2) > td:nth-child(2) > table > tbody > tr > td > textarea").value = "感谢老师这个学期的教学和指导";
         }
@@ -60,7 +58,6 @@ function mainForJudge() {
         const same_bad = () => result(5, 0);
 
         const eventlist = [best, good, soso, notgood, bad];
-
         const eventlist2 = [same_best,same_good,same_soso,same_notgood,same_bad];
         // UI
         // 生成评教按钮
@@ -73,8 +70,8 @@ function mainForJudge() {
         let fragmentOne = document.createElement('div');
         let fragmentTwo = document.createElement('div');
 
-        fragmentOne.style = "display:flex;";
-        fragmentTwo.style = "display:flex;";
+        fragmentOne.style = "display:flex;margin:3px";
+        fragmentTwo.style = "display:flex;margin:3px";
 
         const addElem = (text) => {
             let div = document.createElement('div');
@@ -88,7 +85,7 @@ function mainForJudge() {
             let div = document.createElement('div');
             let textnode = document.createTextNode(text);
             div.appendChild(textnode);
-            div.style = 'border:1px solid #000;font:700 24px serif;';
+            div.style = 'border:1px solid #603434;font:700 24px serif;';
             return div;
         }
 
@@ -106,8 +103,10 @@ function mainForJudge() {
         nodes.map((item) => fragmentOne.appendChild(item));
         nodes2.map((item) => fragmentTwo.appendChild(item));
 
-        fragments.appendChild(fragmentOne);
-        fragments.appendChild(fragmentTwo);
+        fragmentAll.appendChild(fragmentOne);
+        fragmentAll.appendChild(fragmentTwo);
+
+        fragments.appendChild(fragmentAll);
         // 添加至页面中
         document.querySelector("body > form > table.fieldsettop > tbody > tr > td > table:nth-child(1) > tbody > tr:nth-child(2) > td:nth-child(2) > table > tbody > tr > td").appendChild(fragments);
     }
